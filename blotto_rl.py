@@ -1,49 +1,58 @@
 import pyspiel
 import numpy as np
+from open_spiel.python import rl_environment
+from open_spiel.python.algorithms import random_agent
+from open_spiel.python.algorithms import tabular_qlearner
 
-GAME = pyspiel.load_game('blotto', {'players' : 2, 'fields' : 3})
-MAX_EPISODES = 100
+MAX_EPISODES = 1000
+NUM_PLAYERS = 2
+NUM_FIELDS = 3
+NUM_COINS = 10
+
+settings = {'players' : NUM_PLAYERS, 'fields' : NUM_FIELDS, 'coins' : NUM_COINS}
+environment = rl_environment.Environment('blotto', **settings)
+num_actions = environment.action_spec()['num_actions']
+print("Possible Actions:", num_actions)
+rl_agent = tabular_qlearner.QLearner(player_id=0, num_actions=num_actions)
+opponent = random_agent.RandomAgent(player_id=1, num_actions=num_actions)
 
 
-numPlayers = GAME.num_players()
-
-scores = []
-for n in range(numPlayers):
-    scores.append(0)
-
+won_games = [0,0]
 
 
 episode = 0
-
 while episode < MAX_EPISODES:
     episode += 1
     print("EPISODE", episode)
 
-    state = GAME.new_initial_state()
+    time_step = environment.reset() #initial step per episode
 
-    while not state.is_terminal():
-        #    sddsffsd
+    while not time_step.last():
+        rl_step = rl_agent.step(time_step)
+        opp_step = opponent.step(time_step)
 
-        actions = []
-        
-        for player in range(numPlayers):
-            action = np.random.choice(state.legal_actions(player))
-            #print(state.action_to_string(player, action))
-            
-            actions.append(action)
+        rl_action = rl_step.action
+        opp_action = opp_step.action
 
-        state.apply_actions(actions)
+        print('RL', rl_action, ':', environment.get_state.action_to_string(0, rl_action))
+        print('Opp', opp_action, ':', environment.get_state.action_to_string(1, opp_action))
+        actions = [rl_action, opp_action]
 
-        print(str(state))
+        time_step = environment.step(actions)
 
-    returns = state.returns()
-    print ("Returns:", returns)
+    #Episode over, step both agents with final state
+    rl_agent.step(time_step)
+    opponent.step(time_step)
+
+    #print(environment.get_state)
+    rewards = environment.get_state.returns()
+    print ("Rewards:", rewards)
     
-    for player in range(numPlayers):
-        scores[player] += returns[player]
+    for player in range(NUM_PLAYERS):
+        won_games[player] += rewards[player] if rewards[player] > 0 else 0
 
     print()
     
-print("\nFINAL SCORES")
-for player in range(numPlayers):
-    print("Player", player, ":", scores[player])
+print("\nWON Games")
+print("RL Agent:", int(won_games[0]))
+print('Opponent:', int(won_games[1]))
