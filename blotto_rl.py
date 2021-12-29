@@ -9,6 +9,8 @@ NUM_PLAYERS = 2
 NUM_FIELDS = 3
 NUM_COINS = 10
 
+np.random.seed(1)
+
 settings = {'players' : NUM_PLAYERS, 'fields' : NUM_FIELDS, 'coins' : NUM_COINS}
 environment = rl_environment.Environment('blotto', **settings)
 num_actions = environment.action_spec()['num_actions']
@@ -16,9 +18,7 @@ print("Possible Actions:", num_actions)
 rl_agent = tabular_qlearner.QLearner(player_id=0, num_actions=num_actions)
 opponent = random_agent.RandomAgent(player_id=1, num_actions=num_actions)
 
-
 won_games = [0,0]
-
 
 episode = 0
 while episode < MAX_EPISODES:
