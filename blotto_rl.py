@@ -4,7 +4,7 @@ from open_spiel.python import rl_environment
 from open_spiel.python.algorithms import random_agent
 from open_spiel.python.algorithms import tabular_qlearner
 
-MAX_EPISODES = 1000
+MAX_EPISODES = 10
 NUM_PLAYERS = 2
 NUM_FIELDS = 3
 NUM_COINS = 10
@@ -19,6 +19,8 @@ rl_agent = tabular_qlearner.QLearner(player_id=0, num_actions=num_actions)
 opponent = random_agent.RandomAgent(player_id=1, num_actions=num_actions)
 
 won_games = [0,0]
+rl_won = []
+opp_won = []
 
 episode = 0
 while episode < MAX_EPISODES:
@@ -48,11 +50,18 @@ while episode < MAX_EPISODES:
     rewards = environment.get_state.returns()
     print ("Rewards:", rewards)
     
-    for player in range(NUM_PLAYERS):
-        won_games[player] += rewards[player] if rewards[player] > 0 else 0
+    won_games[0] += rewards[0] if rewards[0] > 0 else 0
+    won_games[1] += rewards[1] if rewards[1] > 0 else 0
+
+    rl_won.append(won_games[0])
+    opp_won.append(won_games[1])
 
     print()
     
 print("\nWON Games")
 print("RL Agent:", int(won_games[0]))
 print('Opponent:', int(won_games[1]))
+print()
+print('Won Trend')
+print('RL Agent:', rl_won)
+print('Opponent:', opp_won)
