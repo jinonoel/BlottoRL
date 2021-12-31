@@ -1,7 +1,22 @@
 \begin{thebibliography}{1}
 
+\bibitem{Borel1953}
+E.~Borel.
+\newblock The theory of play and integral equations with skew symmetric
+  kernels.
+\newblock {\em Econometrica}, 21(1):97--100, 1953.
+
+\bibitem{OpenSpiel}
+M.~Lanctot, E.~Lockhart, J.-B. Lespiau, V.~Zambaldi, S.~Upadhyay,
+  J.~P\'{e}rolat, S.~Srinivasan, F.~Timbers, K.~Tuyls, S.~Omidshafiei,
+  D.~Hennes, D.~Morrill, P.~Muller, T.~Ewalds, R.~Faulkner, J.~Kram\'{a}r,
+  B.~D. Vylder, B.~Saeta, J.~Bradbury, D.~Ding, S.~Borgeaud, M.~Lai,
+  J.~Schrittwieser, T.~Anthony, E.~Hughes, I.~Danihelka, and J.~Ryan-Davis.
+\newblock {OpenSpiel}: A framework for reinforcement learning in games.
+\newblock {\em CoRR}, abs/1908.09453, 2019.
+
 \bibitem{Sutton1998}
-Richard~S. Sutton and Andrew~G. Barto.
+R.~S. Sutton and A.~G. Barto.
 \newblock {\em Reinforcement Learning: An Introduction}.
 \newblock The MIT Press, second edition, 2018.
 

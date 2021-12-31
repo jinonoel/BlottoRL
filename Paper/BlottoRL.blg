@@ -1,46 +1,46 @@
 This is BibTeX, Version 0.99d (TeX Live 2021)
 Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
 The top-level auxiliary file: BlottoRL.aux
-The style file: plain.bst
+The style file: abbrv.bst
 Database file #1: References.bib
-You've used 1 entry,
+You've used 3 entries,
             2118 wiz_defined-function locations,
-            504 strings with 4120 characters,
-and the built_in function-call counts, 279 in all, are:
-= -- 24
-> -- 13
+            520 strings with 4616 characters,
+and the built_in function-call counts, 1588 in all, are:
+= -- 129
+> -- 158
 < -- 0
-+ -- 5
-- -- 4
-* -- 16
-:= -- 54
-add.period$ -- 3
-call.type$ -- 1
-change.case$ -- 5
++ -- 64
+- -- 60
+* -- 151
+:= -- 298
+add.period$ -- 9
+call.type$ -- 3
+change.case$ -- 39
 chr.to.int$ -- 0
-cite$ -- 1
-duplicate$ -- 12
-empty$ -- 23
-format.name$ -- 4
-if$ -- 56
+cite$ -- 3
+duplicate$ -- 33
+empty$ -- 66
+format.name$ -- 60
+if$ -- 289
 int.to.chr$ -- 0
-int.to.str$ -- 1
-missing$ -- 2
-newline$ -- 8
-num.names$ -- 2
-pop$ -- 8
+int.to.str$ -- 3
+missing$ -- 4
+newline$ -- 18
+num.names$ -- 6
+pop$ -- 38
 preamble$ -- 1
-purify$ -- 4
+purify$ -- 36
 quote$ -- 0
-skip$ -- 7
+skip$ -- 22
 stack$ -- 0
-substring$ -- 5
-swap$ -- 1
+substring$ -- 38
+swap$ -- 3
 text.length$ -- 0
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 2
+type$ -- 10
 warning$ -- 0
-while$ -- 2
-width$ -- 2
-write$ -- 13
+while$ -- 8
+width$ -- 4
+write$ -- 35
