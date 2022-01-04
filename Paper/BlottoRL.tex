@@ -25,8 +25,7 @@
 
 \section{Introduction}
 
-Models and games are simplified representations of the world. There are many different kinds models, all differing in complexity and which aspect of the world they allow us to further our understanding of. In this paper we focus on a specific instance of agent-based models, which uses reinforcement learning to train the agent how to act in its environment. Reinforcement learning agents are usually also Markov processes, which is another type of model that can be used. We test this reinforcement learning agent in a Colonel Blotto environment, and test its performance against a Random Agent as its opponent.
-
+Models and games are simplified representations of the world. There are many different kinds of models, all differing in complexity and which aspect of the world they allow us to further our understanding of. In this paper we focus on a specific instance of agent-based models, which uses reinforcement learning to train the agent how to act in its environment. Reinforcement learning agents are usually also Markov processes, which is another type of model that can be used. We test this reinforcement learning agent in a Colonel Blotto environment\footnote{Source code for the experiments can be found at https://github.com/jinonoel/BlottoRL}, and measure its performance against a Random Agent as its opponent. 
 \section{Colonel Blotto}
 
 
@@ -34,7 +33,7 @@ Colonel Blotto is a constant-sum game proposed by Émile Borel in 1921\cite{Bore
 
 \hfill
 
-A notable thing about Colonel Blotto is that there is no optimal best strategy that will beat all other possible strategies. This means that the best strategy can change in a given game depending on the opponent and what the strategy the opponent is using. One way to play Colonel Blotto would be to update your strategy over time as you play the same opponent multiple times. If the opponent's strategy is constant or doesn't change much, it must be possible to eventually "learn" a strategy that would win against this opponent more often than it loses. In the field of 
+A notable thing about Colonel Blotto is that there is no optimal best strategy that will beat all other possible strategies. This means that the best strategy can change in a given game depending on the opponent and what the strategy the opponent is using. One way to play Colonel Blotto would be to update your strategy over time as you play the same opponent multiple times. If the opponent's strategy is constant or doesn't change much, it must be possible to eventually "learn" a strategy that would win against this opponent more often than it loses. One way to do this would be to create an agent-based model that would update itself over time as its plays an opponent repeatedly.
 
 \section{Reinforcement Learning}
 
@@ -56,7 +55,7 @@ $\pi(s,a)$ is a probability mapping of an agent taking action $a$ while in state
 
 \subsection{Markov Decision Process}
 
-A common formulation of the Reinforcement Learning problem is as a Markov Decision Process (MDP). In this class of RL problems, the information from the history of all states, actions, and rewards before time $t$ is encapsulate in the current state at time $t$. This is the Markov property, and tasks which exhibit this property are called Markov decision processes. Formally, the Markov property states that for transition probability function $Pr$,
+Calculating the optimal policy in general is a hard problem, especially if we need to keep track of the history of all states, actions, and rewards. To simplify things, reinforcement learning problems are usually constructed as Markov models, such that the information from the history of all states, actions, and rewards before time $t$ is encapsulate in the current state at time $t$. This is the Markov property, and tasks which exhibit this property are called Markov Decision Process (MDP). Formally, the Markov property states that for transition probability function $Pr$,
 
 \begin{equation}
 Pr(s_{t+1}, r_{t+1} | s_t, a_t) = Pr(s_{t+1}, r_{t+1} | s_t,a_t, r_t, s_{t-1}, a_{t-1}, r_{t-1},...,s_0, a_0, r_0)
@@ -74,19 +73,22 @@ The reinforcement learning problem can therefore be reduced to finding the optim
 \begin{equation}
 \pi^*(s) = \argmax_a{Q(s,a)}
 \end{equation}
+
 \subsection{Q-Learning}
 
-Q-Learning is one of the basic reinforcement learning methods. It approximates the state-action value function $Q(s,a)$ using the Bellman equations, which allows it to define $Q(s,a)$ in a recursive manner. At each time step Q-Learning approximates the optimal policy in the following manner:
+Q-Learning is one of the basic reinforcement learning methods, and takes full advantage of the Markov property of the RL model.. It approximates the state-action value function $Q(s,a)$ in a recursive manner using a weighted average of the old value and the new information retrieved from the action and subsequent reward. 
+
+\hfill
+
+At each time step Q-Learning approximates the optimal policy by iteratively updating $Q$ in the following manner, where $\alpha > 0$ is the learning rate, and $0 \leq \gamma \leq 1$ is again the discount factor:
 
 \begin{equation}
 Q(s_t, a_t) = Q(s_t, a_t) + \alpha[r_{t+1} + \gamma \max_aQ(s_{t+1}, a_{t+1}) - Q(s_t, a_t)]
 \end{equation}
 
-where $\alpha > 0$ is the learning rate, and $0 \leq \gamma \leq 1$ is again the discount factor.
-
 \section{Experiments}
 
-We now show how how a Q-Learning agent performs against a random agent in Colonel Blotto.
+We now show how a Q-Learning agent performs against a random agent in Colonel Blotto.
 
 \subsection{Experimental Setup}
 
@@ -115,7 +117,7 @@ We run 1000 games of Colonel Blotto to see the performance of the reinforcement 
     \label{fig:mesh1}
 \end{figure}
 
-We also dive deeper and look at the $Q$-values that the agent has assigned to each of the 66 possible actions, to better understand what strategy it has arrived at. We also continue running the episodes to 1 million games to optimize the $Q$-values further before showing the results. Below we show the top 5 and the bottom 5 actions based on their $Q$-value scores. The 3 numbers for each action signify the number of coins that the RL agent assigns for each of the 3 fields.
+We also dive deeper and look at the $Q$-values that the agent has assigned to each of the 66 possible actions, to better understand what strategy it has arrived at. We continue running the episodes to 1 million games to optimize the $Q$-values further before showing the following results. Below we show the top 5 and the bottom 5 actions based on their $Q$-value scores. The 3 numbers for each action signify the number of coins that the RL agent assigns for each of the 3 fields.
 
 \hfill
 
@@ -150,7 +152,9 @@ We also dive deeper and look at the $Q$-values that the agent has assigned to ea
 \end{tabular}
 \end{center}
 
-As can be seen, the actions with the lowest $Q$-value are the ones where the agent puts all their coins in just one front, guaranteeing a loss when their opponent easily wins the other two fronts. On the opposite end, the best actions are the ones where the agent splits their coins almost evenly among just two fronts, with 0 coins allocated to the third front. By sacrificing one of the fronts, they give themselves the best chance to win the other two fronts they focused on, and have a high probability of winning the game in the process. Against a Random Agent, this results in the high win rates that were shown in the earlier graphs.
+\hfill
+
+As can be seen, the actions with the lowest $Q$-values are the ones where the agent puts all their coins in just one front, guaranteeing a loss when their opponent easily wins the other two fronts. On the opposite end, the best actions are the ones where the agent splits their coins almost evenly among just two fronts, with 0 coins allocated to the third front. By sacrificing one of the fronts, they give themselves the best chance to win the other two fronts they focused on, and have a high probability of winning the game in the process. Against a Random Agent, this results in the high win rates that were shown in the earlier graphs.
 
 \section{Conclusion}
 
