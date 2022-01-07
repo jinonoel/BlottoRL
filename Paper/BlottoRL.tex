@@ -9,7 +9,7 @@
 
 \usepackage{amsmath}
 
-\usepackage{algpseudocode}
+%\usepackage{algpseudocode}
 
 \DeclareMathOperator*{\argmax}{arg\,max}
 \DeclareMathOperator*{\argmin}{arg\,min}
@@ -25,25 +25,27 @@
 \begin{document}
 \maketitle
 
-\section{Introduction}
+%\section{Introduction}
+\begin{abstract}
+Models and games are simplified representations of the world. There are many different kinds of models, all differing in complexity and which aspect of the world they allow us to further our understanding of. In this paper we focus on a specific instance of agent-based models, which uses reinforcement learning (RL) to train the agent how to act in its environment. Reinforcement learning agents are usually also Markov processes, which is another type of model that can be used. We test this reinforcement learning agent in a Colonel Blotto environment\footnote{Source code for the experiments can be found at https://github.com/jinonoel/BlottoRL}, and measure its performance against Random agents as its opponent. We find that the RL agent handily beats a single opponent, and still performs quite well when the number of opponents are increased. We also analyze the RL agent and look at what strategies it has arrived by looking at the actions that it has given the highest and lowest $Q$-values. Interesting, the optimal strategy for playing multiple opponents is almost the complete opposite of the optimal strategy for playing a single opponent.
 
-Models and games are simplified representations of the world. There are many different kinds of models, all differing in complexity and which aspect of the world they allow us to further our understanding of. In this paper we focus on a specific instance of agent-based models, which uses reinforcement learning to train the agent how to act in its environment. Reinforcement learning agents are usually also Markov processes, which is another type of model that can be used. We test this reinforcement learning agent in a Colonel Blotto environment\footnote{Source code for the experiments can be found at https://github.com/jinonoel/BlottoRL}, and measure its performance against a Random Agent as its opponent. 
+ \end{abstract}
+ 
 \section{Colonel Blotto}
-
 
 Colonel Blotto is a constant-sum game proposed by Émile Borel in 1921\cite{Borel1953}. In the game two or more players distribute resources (or coins) over several fronts in a battlefield. A player wins a front if they have allocated more resources to it than the other player. The objective of the game is to win more fronts than your opponent.
 
 \hfill
 
-A notable thing about Colonel Blotto is that there is no optimal best strategy that will beat all other possible strategies. This means that the best strategy can change in a given game depending on the opponent and what the strategy the opponent is using. One way to play Colonel Blotto would be to update your strategy over time as you play the same opponent multiple times. If the opponent's strategy is constant or doesn't change much, it must be possible to eventually "learn" a strategy that would win against this opponent more often than it loses. One way to do this would be to create an agent-based model that would update itself over time as its plays an opponent repeatedly.
+A notable thing about Colonel Blotto is that there is no optimal best strategy that will beat all other possible strategies. This means that the best strategy can change in a given game depending on the opponent and what strategy the opponent is using. One way to play Colonel Blotto would be to update your strategy over time as you play the same opponent repeatedly. If the opponent's strategy is constant or doesn't change much, it must be possible to eventually "learn" a strategy that would win against this opponent more often than it loses. One way to do this would be to create an agent-based model that would update its strategy as it plays an opponent multiple times.
 
 \section{Reinforcement Learning}
 
-Reinforcement Learning (RL) is a form of agent-based modeling. In RL an agent learns by performing actions which changes the state of an environment. After each action, the agent may also receive a "reward" whose value depends on how close the agent is to what it wants to achieve. The goal for the agent is to maximize the cumulative reward that it receives over all the actions that it takes. After a series of actions, the agent eventually reaches a goal state or terminal state, which signifies the end of an episode. The environment is then reset and the agent starts again from an initial state and the process then repeats itself.
+Reinforcement learning is a form of agent-based modeling. In RL an agent learns by performing actions which changes the state of an environment. After each action the agent may also receive a "reward" from the environment, whose value should depend on how close the agent is to what we want it to achieve. The goal for the agent is to maximize the cumulative reward that it receives over time. After a series of actions, the agent eventually reaches a goal state or terminal state, which signifies the end of an episode. The environment is then reset and the agent starts again from an initial state and the process then repeats itself.
 
 \hfill
 
-Formally, an RL model is a set of states $S$, a set of actions $A$, and transition rules between states depending on the action taken. For state $s \in S$ at time $t$, an agent performs an action $a \in A$, moves to a new state $s'$ and receives a reward $r_t$. The goal of the agent is to maximize the expected reward $Rt$,
+Formally, an RL model is a set of states $S$, a set of actions $A$, and transition rules between states depending on the action taken. For state $s \in S$ at time $t$, an agent performs an action $a \in A$, moves to a new state $s'$ and receives a reward $r_t$.  The agent follows a policy $\pi$ for choosing which action to take, and $\pi(s,a)$ is the probability mapping of an agent taking action $a$ while in state $s$. The goal of the agent is to maximize the expected reward $Rt$,
 
 \begin{equation}
 R_t = \sum_{k=0}^{\infty}\lambda^kr_{t+k}
@@ -51,26 +53,23 @@ R_t = \sum_{k=0}^{\infty}\lambda^kr_{t+k}
 
 where $0 \leq \gamma \leq 1$ is a discount factor for handling infinite horizons.
 
-\hfill
-
-$\pi(s,a)$ is a probability mapping of an agent taking action $a$ while in state $s$. A proper policy is one where there is a non-zero probability of reaching a terminal state. There is always an optimal policy $\pi^*$ that is better than or equal to all other policies when it comes maximizing the cumulative rewards. 
 
 \subsection{Markov Decision Process}
 
-Calculating the optimal policy in general is a hard problem, especially if we need to keep track of the history of all states, actions, and rewards. To simplify things, reinforcement learning problems are usually constructed as Markov models, such that the information from the history of all states, actions, and rewards before time $t$ is encapsulate in the current state at time $t$. This is the Markov property, and tasks which exhibit this property are called Markov Decision Process (MDP). Formally, the Markov property states that for transition probability function $Pr$,
+Calculating the optimal policy in general is a hard problem, especially if we need to keep track of the history of all states, actions, and rewards. To simplify things, reinforcement learning problems are usually constructed as Markov models, such that the information from the history of all states, actions, and rewards before time $t$ is encapsulated in the current state at time $t$. This is the Markov property, and control optimization tasks which exhibit this property are called Markov Decision Process (MDP). Formally, the Markov property states that for transition probability function $Pr$,
 
 \begin{equation}
 Pr(s_{t+1}, r_{t+1} | s_t, a_t) = Pr(s_{t+1}, r_{t+1} | s_t,a_t, r_t, s_{t-1}, a_{t-1}, r_{t-1},...,s_0, a_0, r_0)
 \end{equation}
 
 \subsection{Value Function}
-The state-action value function $Q$ is the estimate of the expected rewards the agent will receive by being at state $s$, at time $t$, taking action $a$, and then following policy $\pi$ from $t+1$ onwards. 
+The state-action value function $Q$ is the estimate of the expected rewards the agent will receive by being at state $s$ at time $t$, taking action $a$, and then following policy $\pi$ from $t+1$ onwards. 
 
 \begin{equation}
 Q^\pi(s,a) = \mathbb{E}_\pi(R_t | s_t, a_t)
 \end{equation}
 
-The reinforcement learning problem can therefore be reduced to finding the optimal policy $\pi^*$ by simply choosing the action $a$ that maximizes $Q(s,a)$ for all $s \in S$ 
+The reinforcement learning problem can be reduced to being able to calculate $Q(s,a)$ accurately for all $s \in S$ and  $a \in A$. The agent can then follow the optimal policy $\pi^*$ by simply choosing the action $a$ that maximizes $Q(s,a)$ for all $s \in S$.
 
 \begin{equation}
 \pi^*(s) = \argmax_a{Q(s,a)}
@@ -78,7 +77,7 @@ The reinforcement learning problem can therefore be reduced to finding the optim
 
 \subsection{Q-Learning}
 
-Q-Learning is one of the basic reinforcement learning methods, and takes full advantage of the Markov property of the RL model.. It approximates the state-action value function $Q(s,a)$ in a recursive manner using a weighted average of the old value and the new information retrieved from the action and subsequent reward. 
+Q-Learning is one of the basic reinforcement learning methods, and takes full advantage of the Markov property of the RL model. It approximates the state-action value function $Q(s,a)$ in a recursive manner at time $t$ using a weighted average of the current value and the new information retrieved from applying the action $a_{t+1}$ and receiving subsequent reward $r_{t+1}$ from the environment. 
 
 \hfill
 
@@ -90,15 +89,15 @@ Q(s_t, a_t) = Q(s_t, a_t) + \alpha[r_{t+1} + \gamma \max_aQ(s_{t+1}, a_{t+1}) - 
 
 \section{Experiments}
 
-We now show how a Q-Learning agent performs against a random agent in Colonel Blotto.
+We now show how a Q-Learning agent performs against a Random agent in Colonel Blotto.
 
 \subsection{Experimental Setup}
 
-We setup a 2-player Colonel Blotto game with 3 fields and 10 coins per player. This provides a total of 66 possible actions $a$ (ways to distribute the 10 coins on the 3 fields) that the players can choose from. The players aim to distribute their 10 coins among the 3 fields in such a way that their coins are greater than their opponent's coins in each field. The winner of the game is the player that wins more fields than their opponent, and received a reward of $r=1$ from the environment. The loser of the game receives a reward of $r=-1$. A single episode in reinforcement learning constitutes one game. We count how many games each player has won over time and show the results. .
+We setup a 2-player Colonel Blotto game with 3 fields and 10 coins per player. This provides a total of 66 possible actions $a$ (ways to distribute the 10 coins on the 3 fields) that the players can choose from. The players aim to distribute their 10 coins among the 3 fields in such a way that their coins are greater than their opponent's coins in each field. The winner of the game is the player that wins more fields than their opponent, and received a reward of $r=1$ from the environment. The loser of the game receives a reward of $r=-1$. A single episode in reinforcement learning constitutes one game. We count how many games each player has won over time and show the results.
 
 \hfill
 
-Our reinforcement learning agent uses the Q-Learning algorithm for approximating the optimal policy. We use $\alpha=0.1$ as the learning rate and $\gamma=1$ as the discount factor. We also set $\epsilon=0.2$ as the exploration rate for the agent. For the opponent, we use a RandomAgent that will select one of the 66 possible actions at random with equal probability for all of them. The experiments were run using the OpenSpiel\cite{OpenSpiel} environment simulator.
+Our reinforcement learning agent uses the Q-Learning algorithm for approximating the optimal policy. We use $\alpha=0.1$ as the learning rate and $\gamma=1$ as the discount factor. We also set $\epsilon=0.2$ as the exploration rate for the agent. For the opponent, we use a Random agent that will select one of the 66 possible actions at random with equal probability for all of them. The experiments were run using the OpenSpiel\cite{OpenSpiel} environment simulator.
 
 
 \subsection{Results}
@@ -119,7 +118,7 @@ We run 1 million games of Colonel Blotto to see the performance of the reinforce
     \label{fig:mesh1}
 \end{figure}
 
-We also dive deeper and look at the $Q$-values that the agent has assigned to each of the 66 possible actions, to better understand what strategy it has arrived at. We continue running the episodes to 1 million games to optimize the $Q$-values further before showing the following results. Below we show the top 5 and the bottom 5 actions based on their $Q$-value scores. The 3 numbers for each action signify the number of coins that the RL agent assigns for each of the 3 fields.
+We also dive deeper and look at the $Q$-values that the agent has assigned to each of the 66 possible actions, to better understand what strategy it has arrived at. Below we show the top 4 and the bottom 4 actions based on their $Q$-value scores. The 3 numbers for each action signify the number of coins that the RL agent assigns for each of the 3 fields.
 
 \hfill
 
@@ -156,21 +155,23 @@ We also dive deeper and look at the $Q$-values that the agent has assigned to ea
 
 \hfill
 
-As can be seen, the actions with the lowest $Q$-values are the ones where the agent puts all their coins in just one front, guaranteeing a loss when their opponent easily wins the other two fronts. On the opposite end, the best actions are the ones where the agent splits their coins almost evenly among just two fronts, with 0 coins allocated to the third front. By sacrificing one of the fronts, they give themselves the best chance to win the other two fronts they focused on, and have a high probability of winning the game in the process. Against a Random Agent, this results in the high win rates that were shown in the earlier graphs.
+As can be seen, the actions with the lowest $Q$-values are the ones where the agent puts all their coins in just one front, guaranteeing a loss when their opponent easily wins the other two fronts. On the opposite end, the best actions are the ones where the agent splits their coins almost evenly among just two fronts, with 0 coins allocated to the third front. By sacrificing one of the fronts, they give themselves the best chance to win the other two fronts they focused on, and have a high probability of winning the game in the process. Against a Random agent, this results in the high win rates that were shown in the earlier graphs.
 
 \subsection{Games with 3 or More Players}
 
-Next we analyze what happens when we extend Colonel Blotto to games of 3 or more players. Colonel Blotto was originally envisioned as a 2-player game, and when extending to more than 3 or more players we need to properly define first what will constitute a "won" game for a player and how that win is divided in case there are multiple winners. For this paper we take the definition of the default implementation of Colonel Blotto in OpenSpiel\footnote{Implementation code can be found in https://github.com/deepmind/open\_spiel}:
+Next we analyze what happens when we extend Colonel Blotto to games of 3 or more players. Colonel Blotto was originally envisioned as a 2-player game, and when extending to more than 2 players we need to properly define first what will be the winning conditions for the game and how that win is divided in case there are multiple winners. For this paper we take the definition of the implementation of Colonel Blotto in OpenSpiel\footnote{Implementation code can be found in https://github.com/deepmind/open\_spiel}:
 
 \begin{enumerate}
-  \item First, iterate over every front and get the winners of each one. If there are multiple winners for a front, do nothing. If there is a single winner for a front, give that player 1 point.
-  \item Second, find players with the most numbers of points. If only one player has the highest points than there is only a single winner of the game. Otherwise all the players with the same highest points value are considered the winners.
-  \item Each of the winners gets a "won game" point of 1 divided by the total number of winners.
+  \item Iterate over every front and get the player that has allocated the most coins for each one. If there is a single winner for a front, give that player 1 point. However if there are multiple winners for a front, don't assign any points to those players.
+  \item Find the players with the most numbers of points. If only one player has the highest points count then there is only a single winner for the game. Otherwise the players with the same highest points count are all considered the winners.
+  \item Each of the winners gets a score of $\frac{1}{num\_winners}$ %1 divided by the total number of winners: 
 \end{enumerate}
+
+The returned score is also used as the environment reward for the winners. For the losers of the game, they get a score of $\frac{-1}{num\_losers}$.
 
 \hfill
 
-Using this formula for calculating winners in Colonel Blotto of games with 3 or more players, we play 1 million games while increasing the number of Random agent opponents from 1 to 10 and show the results. Figure 3 shows that there is a clear drop in games won for the RL agent when the number of opponents is increased from 1 to 2. The wins then increase when the number of opponents is set to 3, and then stays in that range without much variation as the number of opponents keep increasing. 
+Using this method for calculating winning games in Colonel Blotto of games with 3 or more players, we play 1 million games while increasing the number of Random agent opponents from 1 to 10 and show the results at each opponent count. Figure 3 shows that there is a clear drop in games won for the RL agent when the number of opponents is increased from 1 to 2. The wins then increase when the number of opponents is set to 3, and then stays in that range without much variation as the number of opponents keep increasing. 
 
 \hfill
 
@@ -193,7 +194,7 @@ It may seem that the RL agent isn't doing well when more opponents are added int
 \hfill
 
 
-Finally we again look at the $Q$-values and see which actions the RL agent has deemed best. For the table below we show the actions with the 5  highest and 5 lowest $Q$-values against 10 opponents
+Finally we again look at the $Q$-values and see which actions the RL agent has deemed best. For the table below we show the actions with the 4 highest and 4 lowest $Q$-values against 10 opponents
 
 \hfill 
 
@@ -233,15 +234,15 @@ We find that the previous worst strategies against 1 opponent, where the agent s
 
 \section{Conclusion}
 
-We have shown how a RL agent using Q-Learning performs against a Random Agent in 1000 games of Colonel Blotto. The RL doesn't do at well at first, and actually has quite similar win rates to the Random Agent over the first 100 to 150 episodes. It takes almost 200 episodes for the RL agent to start differentiating itself to the Random Agent, and by 1000 episodes the RL agent has started to clearly show its dominance.
+We have shown how an RL agent using Q-Learning performs against a Random agent in 1 million games of Colonel Blotto. The RL doesn't do at well at first, and actually has quite similar win rates to the Random agent over the first few episodes. It takes almost 200 episodes for the RL agent to start differentiating itself to the Random agent, and by 1000 episodes the RL agent has started to clearly show its dominance.
 
 \hfill
 
-We also investigated what strategies the RL agent has learned through its repeated playing, and find that its preferred strategy is to sacrifice one of the fronts and focus on the other 2 fronts, splitting its coins almost evenly between them. This was shown empirically to be a a winning strategy against the Random Agent.
+We also investigated what strategies the RL agent has learned through its repeated playing, and find that its preferred strategy is to sacrifice one of the fronts and focus on the other 2 fronts, splitting its coins almost evenly between them. This was shown empirically to be a a winning strategy against a single Random agent.
 
 \hfill
 
-Lastly, we also investigated what happens when we increase the number of opponents from 1 to 10. We found that the number of games the RL agent wins is significantly less when playing 2 or more opponents. However, the RL agent still performs much better and wins more games compare to each single Random agent. We also found that the optimal strategy when playing 10 opponents is the complete opposite to playing just 1 opponent, mainly due to how the winning conditions are designed and how rewards are being returned from the environment.
+Lastly, we also investigated what happens when we increase the number of opponents from 1 to 10. We found that the number of games the RL agent wins is significantly less when playing 2 or more opponents. However, the RL agent still performs much better and wins more games compared to each single Random agent. We also found that the optimal strategy when playing 10 opponents is the complete opposite to playing just 1 opponent, mainly due to how the winning conditions are designed and how rewards are being returned from the environment.
 
 \nocite{*}
 \bibliographystyle{abbrv}
